@@ -1,6 +1,7 @@
 const User = require("../models/authSchema");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { Blacklist } = require("../models/blacklistSchema");
 
 // Register Route
 const register = async (req, res)=>{
@@ -9,16 +10,19 @@ const register = async (req, res)=>{
 
         const existingUser = await User.findOne({ email });
         if(existingUser){
-            return res.status(403).json({ message: 'Invalid Credentials' });
+            return res.status(403).json({ message: 'Invalid Credentials', error: existingUser });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        const userCount = await User.countDocuments();
+        const userRole = userCount === 0 ? 'Admin' : role;
 
         const newUser = await User.create({ 
             name,
             email,
             password: hashedPassword,
-            role
+            role: userRole
         });
 
         const user = newUser.toObject();
@@ -60,4 +64,22 @@ const login = async (req, res)=>{
     }
 };
 
-module.exports = { register, login };
+// Logout Route
+const logout = async (req, res)=>{
+    try {
+        const token = req.header('Authorization')?.split(' ')[1];
+
+        if(!token){
+            return res.status(400).json({ message: 'Token missing in header.' });
+        }
+
+        await Blacklist.create({ token });
+
+        res.status(200).json({ message: 'Logout Successfully.',  });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
+module.exports = { register, login, logout };

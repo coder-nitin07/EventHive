@@ -19,7 +19,7 @@ const authSchema = new mongoose.Schema({
         enum: [ 'User', 'Organizer', 'Admin' ],
         default: 'User'
     }
-});
+},{ timestamps: true });
 
 const User = mongoose.model('User', authSchema);
 module.exports = User;
