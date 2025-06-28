@@ -32,17 +32,20 @@
         - Cannot manage or modify organizers or events directly
 
     2. Organizer
-        - Register & login
-        - View all open Event Requests
-        - Apply to manage events of interest
-        - Track assigned events after admin approval
+        - Register & login as a regular user
+        - Submit Organizer Onboarding Request (includes photo, experience, etc.)
+        - After approval by Admin:
+            - View all open Event Requests
+            - Apply to manage events of interest
+            - Track assigned events
 
     3. Admin
         - Login with special privileges
         - View all event requests
-        - View all organizer applications for each event
-        - Assign one organizer per event
-        - Auto-reject all others with message
+        - View all organizer onboarding requests
+        - Approve or reject organizer requests with message
+        - View all organizer applications per event
+        - Assign one organizer per event (auto-reject others with message)
         - Manage users/organizers (optional)
 
     
@@ -56,6 +59,9 @@
     - Protected routes & RBAC using middleware
     - Input validation via Joi
     - Mongoose models for Users, Events, OrganizerRequests, etc.
+    - Organizer Onboarding Request API (pending → approved/rejected)
+    - Admin approval/rejection flow with message
+    - Organizer access granted only after approval
 
 
 ## Frontend Features -
@@ -86,7 +92,7 @@
 | `EventRequest`          | Created by users (title, date, guests, facilities...) |
 | `OrganizerRequest`      | Stores organizer applications per event               |
 | `Assignment` (optional) | Final record of assigned organizer                    |
-
+| OrganizerRequest        | Organizer onboarding request & approval logic         |
 
 
 ## Deployment Plan -
