@@ -3,7 +3,8 @@ const Organizer = require("../models/organizerOnboardingSchema");
 // Create organizer
 const onboardOrganizer = async (req, res)=>{
     try {
-        const { photo, yearsOfExperience, experienceSummary, city, phone, age, skills } = req.body;
+        const photo = req.file?.path;
+        const { yearsOfExperience, experienceSummary, city, phone, age, skills } = req.body;
 
         const existingOrganizer = await Organizer.findOne({ phone });
         if(existingOrganizer){
@@ -11,7 +12,7 @@ const onboardOrganizer = async (req, res)=>{
         }
 
         const newOrganizer = await Organizer.create({
-            user: userId,
+            User: req.user.id,
             photo,
             yearsOfExperience,
             experienceSummary,
