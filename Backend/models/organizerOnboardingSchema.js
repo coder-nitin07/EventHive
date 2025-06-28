@@ -24,6 +24,7 @@ const organizerSchema = new mongoose.Schema({
     },
     phone: {
         type: Number,
+        unique: true,
         required: true
     },
     age: {
