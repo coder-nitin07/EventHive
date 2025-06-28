@@ -1,6 +1,7 @@
 const express = require('express');
 const dbConnection = require('./config/db');
 const { authRouter } = require('./routes/authRoutes');
+const { organizerRouter } = require('./routes/organizerRoutes');
 const app = express();
 require('dotenv').config();
 
@@ -12,6 +13,7 @@ dbConnection();
 
 // routes
 app.use('/auth', authRouter);
+app.use('/organizer', organizerRouter);
 
 app.get('/', (req, res)=>{
     res.send('EventHive Project is currently Under Development...');
