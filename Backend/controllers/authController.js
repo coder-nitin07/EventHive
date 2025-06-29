@@ -10,7 +10,7 @@ const register = async (req, res)=>{
 
         const existingUser = await User.findOne({ email });
         if(existingUser){
-            return res.status(403).json({ message: 'Invalid Credentials', error: existingUser });
+            return res.status(403).json({ message: 'Invalid Credentials' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
