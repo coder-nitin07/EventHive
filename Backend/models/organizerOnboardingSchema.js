@@ -45,8 +45,15 @@ const organizerSchema = new mongoose.Schema({
         type: String,
         default: 'Admin will Update you soon'
     }
-});
+},{ timestamps: true });
 
+organizerSchema.index(
+  { createdAt: 1 },
+  {
+    expireAfterSeconds: 60 * 60 * 24 * 30, // 30 days
+    partialFilterExpression: { status: 'rejected' }
+  }
+);
 
 const Organizer = mongoose.model('Organizer', organizerSchema);
 module.exports = Organizer;

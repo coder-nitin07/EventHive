@@ -26,9 +26,12 @@ const verifyOrganizer = async (req, res)=>{
     }
 
     const getOragnizer = await Organizer.findById( id );
-    console.log(getOragnizer, "s");
     if(!getOragnizer){
         return res.status(404).json({ message: 'Oragnizer Request not found' });
+    }
+
+    if(getOragnizer.status !== 'pending'){
+        return res.status(400).json({ message: 'This request already have been processed.' })
     }
     
     getOragnizer.status = status;
@@ -37,7 +40,6 @@ const verifyOrganizer = async (req, res)=>{
     }
     await getOragnizer.save();
     
-    console.log(getOragnizer, "sssss");
     if(status === 'accepted'){
         await User.findByIdAndUpdate(
             getOragnizer.User,
