@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const eventTypes = require('../constants/eventTypes');
 
 const organizerSchema = new mongoose.Schema({
     User: {
@@ -33,7 +34,7 @@ const organizerSchema = new mongoose.Schema({
     },
     skills: {
         type: [ String ],
-        enum: [ 'Wedding', 'Birthday-party', 'Anniversary', 'Seminar', 'Expo', 'Session', 'other' ],
+        enum: eventTypes,
         required: true
     },
     status: {
