@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const eventTypes = require('../constants/eventTypes');
 
 const eventSchema = new mongoose.Schema({
-    user: {
+    User: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
