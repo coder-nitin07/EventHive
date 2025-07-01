@@ -1,4 +1,5 @@
 const User = require("../models/authSchema");
+const Event = require("../models/eventSchema");
 const Organizer = require("../models/organizerOnboardingSchema");
 
 // Get All Pending Request of Organizers
@@ -51,4 +52,20 @@ const verifyOrganizer = async (req, res)=>{
     res.status(200).json({ message: `Organizer ${status} successfully.`, organizer: getOragnizer });
 };
 
-module.exports = { getOrganizerRequests, verifyOrganizer };
+// Get All events
+const getEvents = async (req, res)=>{
+    try {
+        const getEvent = await Event.find();
+
+        if(getEvent.length === 0){
+            res.status(404).json({ message: 'No Events Book Yet' });
+        }
+
+        res.status(200).json({ message: 'Events Fetched Successfully', events: getEvent });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
+module.exports = { getOrganizerRequests, verifyOrganizer, getEvents };
