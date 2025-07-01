@@ -4,13 +4,6 @@ const Event = require("../models/eventSchema");
 // Create event
 const bookEvent = async (req, res)=>{
     try {
-        // const id = req.user;
-        
-        // const existingUser = await User.findById(id);
-        // if(!existingUser){
-        //     return res.status(404).json({ message: 'User not found' });
-        // }
-        console.log("first")
         const { eventType, eventDate, location, guests, budget } = req.body;
         
         const newEvent = await Event.create({
@@ -29,4 +22,16 @@ const bookEvent = async (req, res)=>{
     }
 };
 
-module.exports = { bookEvent };
+// Get All Book Event of User
+const userBookEvent = async (req, res)=>{
+    const id = req.user.id;
+
+    const events = await Event.find({ User: id  }).populate('User' );
+    if(events.length === 0){
+        return res.status(404).json({ message: 'No Events Found' });
+    }
+
+    res.status(200).json({ message: 'Events Fetched Successfully', bookEvents: events });
+};
+
+module.exports = { bookEvent, userBookEvent };
