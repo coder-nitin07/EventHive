@@ -58,7 +58,7 @@ const getEvents = async (req, res)=>{
         const getEvent = await Event.find();
 
         if(getEvent.length === 0){
-            res.status(404).json({ message: 'No Events Book Yet' });
+            return res.status(404).json({ message: 'No Events Book Yet' });
         }
 
         res.status(200).json({ message: 'Events Fetched Successfully', events: getEvent });
