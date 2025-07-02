@@ -68,4 +68,20 @@ const getEvents = async (req, res)=>{
     }
 };
 
-module.exports = { getOrganizerRequests, verifyOrganizer, getEvents };
+// Get All Pending Request
+const getAllPendingRequests = async (req, res)=>{
+    try {
+        const getPendingRequests = await Event.find({ status: 'pending' }).populate({ path: 'User', select: 'name email -_id' });
+
+        if(getPendingRequests.length === 0){
+            return res.status(404).json({ message: 'No Request Found' });
+        }
+
+        res.status(200).json({ message: 'All Pending Request Found', requests: getPendingRequests });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
+module.exports = { getOrganizerRequests, verifyOrganizer, getEvents, getAllPendingRequests };
