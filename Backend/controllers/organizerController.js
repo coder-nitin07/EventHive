@@ -1,5 +1,6 @@
 const Event = require("../models/eventSchema");
 const Organizer = require("../models/organizerOnboardingSchema");
+const { OrganizerRequest } = require("../models/organizerRequestSchema");
 
 // Create organizer
 const onboardOrganizer = async (req, res)=>{
@@ -46,4 +47,33 @@ const availableEvents = async (req, res)=>{
     }
 };
 
-module.exports = { onboardOrganizer, availableEvents };
+// Apply for an Event
+const applyForEvent = async (req, res)=>{
+    try {
+        const id = req.params.id;
+        const { message } = req.body;
+        
+        const existingEvent = await Event.findOne({ _id: id });
+        if(!existingEvent){
+            return res.status(404).json({ message: 'Event not found' });
+        }
+
+        const existingRequest = await OrganizerRequest.findOne({ event: id, organizer: req.user.id });
+        if(existingRequest){
+            return res.status(400).json({ message: 'You have already applied for this event.' });
+        }
+
+        const createOrganizerRequest = await OrganizerRequest.create({
+            event: id,
+            organizer: req.user.id,
+            message: message
+        });
+
+        res.status(200).json({ message: 'Request Send Successfully', organizerRequest: createOrganizerRequest });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
+module.exports = { onboardOrganizer, availableEvents, applyForEvent };
