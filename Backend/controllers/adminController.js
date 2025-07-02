@@ -85,7 +85,7 @@ const getAllPendingRequests = async (req, res)=>{
     }
 };
 
-// Assign the Event to Organizer By Event ID
+// Get the Event request of Organizer By Event ID
 const getOrganizerRequestsForEvent = async (req, res)=>{
     try {
         const event = req.params.id;
@@ -122,4 +122,50 @@ const getOrganizerRequestsForEvent = async (req, res)=>{
     }
 };
 
-module.exports = { getOrganizerRequests, verifyOrganizer, getEvents, getAllPendingRequests, getOrganizerRequestsForEvent };
+// Assing the Event to an Organizer
+const assignEventToOrganizer = async (req, res)=>{
+    try {
+        const { eventId, organizerId } = req.params;
+
+        const existingEvent = await Event.findById(eventId);
+        if(!existingEvent){
+            return res.status(404).json({ message: 'Event Not Found' });
+        }
+        
+        if(existingEvent.status !== 'pending'){
+            return res.status(400).json({ message: 'Event is alraedy assigned or unavailable.' });
+        }
+
+        const existingOrganizer = await Organizer.findById(organizerId);
+        if(!existingOrganizer){
+            return res.status(404).json({ message: 'Organizer Not Found' });
+        }
+
+        const updatedEvent = await Event.findByIdAndUpdate(
+            eventId,
+            {
+                organizer: organizerId,
+                status: 'booked'
+            },
+            { new: true }
+        );
+
+        // Update OrganizeerRequsts Status
+        await OrganizerRequest.findOneAndUpdate(
+            { event: eventId, organizer: organizerId },
+            { status: 'accepted' }
+        );
+
+        await OrganizerRequest.updateMany(
+            { event: eventId, organizer: { $ne: organizerId } },
+            { status: 'rejected' }
+        )
+
+        res.status(200).json({ message: 'Event Assigend Successfully', event: updatedEvent });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
+module.exports = { getOrganizerRequests, verifyOrganizer, getEvents, getAllPendingRequests, getOrganizerRequestsForEvent, assignEventToOrganizer };
