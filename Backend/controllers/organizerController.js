@@ -52,20 +52,26 @@ const applyForEvent = async (req, res)=>{
     try {
         const id = req.params.id;
         const { message } = req.body;
+        console.log(req.user, "re.user");
+        const organizer = await Organizer.findOne({ User: req.user.id });
+        console.log(organizer, "orgaujsfbjdf")
+        if (!organizer) {
+            return res.status(404).json({ message: 'Organizer not found' });
+        }
         
         const existingEvent = await Event.findOne({ _id: id });
         if(!existingEvent){
             return res.status(404).json({ message: 'Event not found' });
         }
 
-        const existingRequest = await OrganizerRequest.findOne({ event: id, organizer: req.user.id });
+        const existingRequest = await OrganizerRequest.findOne({ event: id, organizer: organizer.id });
         if(existingRequest){
             return res.status(400).json({ message: 'You have already applied for this event.' });
         }
 
         const createOrganizerRequest = await OrganizerRequest.create({
             event: id,
-            organizer: req.user.id,
+            organizer: organizer.id,
             message: message
         });
 
