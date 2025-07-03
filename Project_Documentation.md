@@ -118,3 +118,4 @@
 | Real-time updates   | ❌            | Socket.IO can be added later                 |
 | Payment integration | ❌            | Out of scope for now                         |
 | Ratings or reviews  | ❌            | Maybe for version 2                          |
+| RNotify Each Other  | ❌            | WHen Event Successfully Organized if Organie and Admin nofify the EVen t is Completed so the Notification send to each other.                          |

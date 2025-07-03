@@ -56,13 +56,32 @@ const verifyOrganizer = async (req, res)=>{
 // Get All events
 const getEvents = async (req, res)=>{
     try {
-        const getEvent = await Event.find();
+        const { status, location, eventType, page=1, limit=10, sortBy='eventDate' } = req.query;
+
+        const filter = {};
+
+        if (status) filter.status = status;
+        if (location) filter.location = location;
+        if (eventType) filter.eventType = eventType;
+
+        const getEvent = await Event.find(filter)
+                            .sort({ [sortBy]: 1 })
+                            .skip((page -1 ) * limit)
+                            .limit(Number(limit));
+
+        const total = await Event.countDocuments(filter);
 
         if(getEvent.length === 0){
             return res.status(404).json({ message: 'No Events Book Yet' });
         }
 
-        res.status(200).json({ message: 'Events Fetched Successfully', events: getEvent });
+        res.status(200).json({ 
+            message: 'Events Fetched Successfully', 
+            total,
+            page: Number(page),
+            limit: Number(limit),
+            events: getEvent,
+        });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: 'Something went wrong' });
