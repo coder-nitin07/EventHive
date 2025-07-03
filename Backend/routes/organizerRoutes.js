@@ -1,5 +1,5 @@
 const express = require('express');
-const { onboardOrganizer, availableEvents, applyForEvent, getAssignedEvents } = require('../controllers/organizerController');
+const { onboardOrganizer, availableEvents, applyForEvent, getAssignedEvents, markEventCompleted } = require('../controllers/organizerController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const { organizerValidation } = require('../middlewares/organizerValidation');
 const { blacklistedToken } = require('../middlewares/blacklistedToken');
@@ -12,5 +12,6 @@ organizerRouter.post('/createOrganizer', blacklistedToken, authMiddleware, autho
 organizerRouter.get('/availableEvents', blacklistedToken, authMiddleware, authorizedRoles('Organizer'), availableEvents);
 organizerRouter.post('/applyForEvent/:id', blacklistedToken, authMiddleware, authorizedRoles('Organizer'), organizerRequestValidation, applyForEvent);
 organizerRouter.get('/getAssignedEvents', blacklistedToken, authMiddleware, authorizedRoles('Organizer'), getAssignedEvents);
+organizerRouter.put('/markEventCompleted/:id', blacklistedToken, authMiddleware, authorizedRoles('Organizer'), markEventCompleted);
 
 module.exports = { organizerRouter };

@@ -26,7 +26,14 @@ const bookEvent = async (req, res)=>{
 const userBookEvent = async (req, res)=>{
     const id = req.user.id;
 
-    const events = await Event.find({ User: id  }).populate('User' );
+    const events = await Event.find({ User: id  }) .populate({
+        path: 'Organizer',
+        populate: {
+            path: 'User',
+            select: 'name email'
+        },
+        select: 'phone yearsOfExperience skills city'
+    });
     if(events.length === 0){
         return res.status(404).json({ message: 'No Events Found' });
     }

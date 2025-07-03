@@ -108,4 +108,36 @@ const getAssignedEvents = async (req, res)=>{
     }
 };
 
-module.exports = { onboardOrganizer, availableEvents, applyForEvent, getAssignedEvents };
+// Mark Event as Completed
+const markEventCompleted = async (req, res)=>{
+    try {
+        const getOrganizer = await Organizer.findOne({ User: req.user.id });
+        if(!getOrganizer){
+            return res.status(404).json({ message: 'Organizer not found.' });
+        }
+
+        const getEvent = await Event.findOne({
+            _id: req.params.id,
+            Organizer: getOrganizer._id,
+            status: 'booked'
+        });
+        
+        if(!getEvent){
+            return res.status(404).json({ message: 'No Assigned or Incompleted Event Found.' });
+        }
+
+        if (getEvent.isCompleted) {
+            return res.status(400).json({ message: 'Event already marked as completed.' });
+        }
+
+        getEvent.isCompleted = true;
+        await getEvent.save();
+
+        res.status(201).json({ message: 'Event Marked Successfully', event: getEvent });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
+module.exports = { onboardOrganizer, availableEvents, applyForEvent, getAssignedEvents, markEventCompleted };

@@ -36,6 +36,10 @@ const eventSchema = new mongoose.Schema({
         type: String,
         enum: [ 'pending', 'booked', 'unavailable' ],
         default: 'pending'
+    },
+    isCompleted: {
+        type: Boolean,
+        default: false
     }
 });
 
