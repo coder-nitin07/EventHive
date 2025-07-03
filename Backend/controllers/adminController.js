@@ -144,7 +144,7 @@ const assignEventToOrganizer = async (req, res)=>{
         const updatedEvent = await Event.findByIdAndUpdate(
             eventId,
             {
-                organizer: organizerId,
+                Organizer: organizerId,
                 status: 'booked'
             },
             { new: true }

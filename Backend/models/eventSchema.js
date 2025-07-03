@@ -10,7 +10,7 @@ const eventSchema = new mongoose.Schema({
     Organizer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Organizer',
-        default: 'pending'
+        default: null
     },
     eventType: {
         type: eventTypes,

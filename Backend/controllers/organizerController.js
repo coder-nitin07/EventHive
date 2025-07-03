@@ -52,9 +52,9 @@ const applyForEvent = async (req, res)=>{
     try {
         const id = req.params.id;
         const { message } = req.body;
-        console.log(req.user, "re.user");
+        
         const organizer = await Organizer.findOne({ User: req.user.id });
-        console.log(organizer, "orgaujsfbjdf")
+        
         if (!organizer) {
             return res.status(404).json({ message: 'Organizer not found' });
         }
@@ -82,4 +82,30 @@ const applyForEvent = async (req, res)=>{
     }
 };
 
-module.exports = { onboardOrganizer, availableEvents, applyForEvent };
+// Get Assigned Events of an Organizer
+const getAssignedEvents = async (req, res)=>{
+    try {
+        const organizer = await Organizer.findOne({ User: req.user.id });
+        if(!organizer){
+            return res.status(404).json({ message: 'Organizer not found' });
+        }
+
+        const getEventss = await Event.find({});
+
+        const getEvents = await Event.find({ 
+            Organizer: organizer._id,
+            status: 'booked' 
+        });
+
+        if(getEvents.length === 0){
+            return res.status(404).json({ message: 'No Events Assigned' });
+        }
+
+        res.status(200).json({ message: 'Assigned Events Fetched', events: getEvents });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
+module.exports = { onboardOrganizer, availableEvents, applyForEvent, getAssignedEvents };
