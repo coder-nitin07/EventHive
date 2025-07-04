@@ -41,4 +41,31 @@ const userBookEvent = async (req, res)=>{
     res.status(200).json({ message: 'Events Fetched Successfully', bookEvents: events });
 };
 
-module.exports = { bookEvent, userBookEvent };
+// Cancel the Event
+const cancelEvent = async (req, res)=>{
+    try {
+        const eventId = req.params.id;
+
+        const event = await Event.findOne({ _id: eventId, User: req.user.id });
+
+        if(!event){
+            return res.status(500).json({ message: 'Event not found' });
+        }
+
+        if(event.status !== 'pending'){
+            return res.status(500).json({ message: 'Event cannot be cancelled as it is already booked' });
+        }
+
+        const cancellationFees = Math.floor(event.budget * 0.02);
+
+        event.status = 'unavailable';
+        await event.save();
+
+        res.status(200).json({ message: 'Event cancelled Successfully', cancellationFees, event });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+
+module.exports = { bookEvent, userBookEvent, cancelEvent };
