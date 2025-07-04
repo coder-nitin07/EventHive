@@ -4,11 +4,18 @@ const { authRouter } = require('./routes/authRoutes');
 const { organizerRouter } = require('./routes/organizerRoutes');
 const { adminRouter } = require('./routes/adminRoutes');
 const { eventRouter } = require('./routes/eventRoutes');
+const cors = require('cors');
 const app = express();
 require('dotenv').config();
 
 // middleware
 app.use(express.json());
+
+// cors
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
 
 // DB Connection
 dbConnection();

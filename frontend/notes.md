@@ -21,3 +21,9 @@ src/
 ├── utils/            → helper functions, constants
 ├── App.js
 └── index.css
+
+
+
+## Step for creating the Proejct -
+    # Step one, firstly setup the project and install react and tailwind and add necessary folders.
+    # Step two, Create the Home page file in the pages folder
