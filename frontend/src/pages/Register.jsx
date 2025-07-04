@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Register = () => {
   });
 
   const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // <- For Navigation
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -32,8 +34,12 @@ const Register = () => {
         password: formData.password,
       });
 
+      localStorage.setItem("token", res.data.token);
       setMessage(res.data.message);
       setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+
+      // Redirect to Home Page
+      navigate("/");
     } catch (err) {
       setMessage(err.response?.data?.message || "Registration Failed");
     }
